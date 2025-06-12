@@ -5,7 +5,7 @@ import Home from "./pages/Home.jsx";
 import SignIn from "./pages/SignIn.jsx";
 import Task from "./pages/Task.jsx";
 import EditTask from "./pages/EditTask.jsx";
-import MyTodos from "./pages/Mytodos.jsx";
+import MyTodos from "./pages/MyTodos.jsx";
 function App() {
   return (
     <>
