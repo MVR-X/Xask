@@ -2,7 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
-import AppTheme from "../static/shared-theme/AppTheme";
+import AppTheme from "../shared-theme/AppTheme";
 import AppAppBar from "../comps/AppAppBar";
 import MainContent from "../comps/MainContent";
 import Footer from "../comps/Footer";
