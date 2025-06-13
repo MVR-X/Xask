@@ -381,12 +381,12 @@ export default function NewTask(props) {
                     row
                   >
                     <FormControlLabel
-                      value="pending"
+                      value="Pending"
                       control={<Radio size="small" />}
                       label="Pending"
                     />
                     <FormControlLabel
-                      value="completed"
+                      value="Completed"
                       control={<Radio size="small" />}
                       label="Completed"
                     />

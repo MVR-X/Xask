@@ -112,14 +112,14 @@ export default function AppAppBar() {
                   New
                 </Button>
               </Link>
-              <Button
+              {/* <Button
                 variant="text"
                 color="info"
                 size="small"
                 sx={{ minWidth: 0 }}
               >
                 FAQ
-              </Button>
+              </Button> */}
             </Box>
           </Box>
           <Box
@@ -185,12 +185,14 @@ export default function AppAppBar() {
                     <CloseRoundedIcon />
                   </IconButton>
                 </Box>
-                <MenuItem>Features</MenuItem>
-                <MenuItem>Testimonials</MenuItem>
-                <MenuItem>Highlights</MenuItem>
-                <MenuItem>Pricing</MenuItem>
-                <MenuItem>FAQ</MenuItem>
-                <MenuItem>Blog</MenuItem>
+                <MenuItem>
+                  <Link to="/mytodos" className="no-underline">
+                    MyTodos
+                  </Link>
+                </MenuItem>
+                <Link to="/new" className="no-underline">
+                  <MenuItem>New</MenuItem>
+                </Link>
                 <Divider sx={{ my: 3 }} />
                 <MenuItem>
                   <Link to="/signup">

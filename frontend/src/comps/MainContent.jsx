@@ -257,7 +257,6 @@ export default function MainContent({ todos }) {
           borderColor: { sm: "none", md: "divider" },
           alignItems: "start",
           py: 6,
-          px: 10,
           gap: 4,
         }}
       >
@@ -285,7 +284,12 @@ export default function MainContent({ todos }) {
                     <Typography gutterBottom variant="caption" component="div">
                       {task.category}
                     </Typography>
-                    <Typography gutterBottom variant="h6" component="div">
+                    <Typography
+                      gutterBottom
+                      variant="h6"
+                      component="div"
+                      sx={{ color: "white" }}
+                    >
                       {task.title}
                     </Typography>
                     <StyledTypography
@@ -295,6 +299,9 @@ export default function MainContent({ todos }) {
                     >
                       {task.text}
                     </StyledTypography>
+                    <Typography gutterBottom variant="caption" component="div">
+                      {task.completed}
+                    </Typography>
                   </StyledCardContent>
                 </Link>
                 <Author task={task} />

@@ -167,7 +167,13 @@ function Task(props) {
         <Container
           maxWidth="lg"
           component="main"
-          sx={{ display: "flex", flexDirection: "column", my: 16, gap: 4 }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            my: 16,
+            gap: 4,
+          }}
+          size={{ xs: 12, sm: 5, lg: 3 }}
         >
           {loading ? (
             <div>Loading...</div>
@@ -175,14 +181,13 @@ function Task(props) {
             <div>Error: {error}</div>
           ) : (
             <Box
+              size={{ xs: 12, sm: 5, lg: 3 }}
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                width: "50%",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 4,
-                p: 2,
                 mx: "auto",
               }}
             >
@@ -220,6 +225,13 @@ function Task(props) {
                       >
                         {task.text || "No content available"}
                       </StyledTypography>
+                      <Typography
+                        gutterBottom
+                        variant="caption"
+                        component="div"
+                      >
+                        {task.completed}
+                      </Typography>
                     </StyledCardContent>
                     <Author card={task} />
                     {user && permission && (
