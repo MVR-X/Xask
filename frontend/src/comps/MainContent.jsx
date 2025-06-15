@@ -284,12 +284,7 @@ export default function MainContent({ todos }) {
                     <Typography gutterBottom variant="caption" component="div">
                       {task.category}
                     </Typography>
-                    <Typography
-                      gutterBottom
-                      variant="h6"
-                      component="div"
-                      sx={{ color: "white" }}
-                    >
+                    <Typography gutterBottom variant="h6" component="div">
                       {task.title}
                     </Typography>
                     <StyledTypography

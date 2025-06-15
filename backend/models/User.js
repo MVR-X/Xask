@@ -5,10 +5,22 @@ const userSchema = new mongoose.Schema(
   {
     userName: { type: String, required: true },
     email: { type: String, required: true },
-    password: { type: String, required: true },
-    profilePicture: { type: String, default: "" }, // URL to profile picture
+    password: {
+      type: String,
+      required: function () {
+        return !this.googleId;
+      }, // Password not required for Google users
+    },
+    avatar: {
+      type: String,
+      default: "",
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true, // Allows multiple users without googleId
+    },
     bio: { type: String, default: "" }, // User bio or description
-    isAdmin: { type: Boolean, default: false }, // Admin status
     isActive: { type: Boolean, default: true }, // Account active status
   },
   { timestamps: true }

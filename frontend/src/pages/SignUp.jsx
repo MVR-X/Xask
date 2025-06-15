@@ -72,7 +72,6 @@ export default function SignUp(props) {
   const [avatar, setAvatar] = useState("");
   const [avatarError, setAvatarError] = useState(false);
   const [avatarErrorMessage, setAvatarErrorMessage] = useState("");
-
   const nav = useNavigate();
 
   const validateInputs = () => {
@@ -104,13 +103,23 @@ export default function SignUp(props) {
       setNameError(false);
       setNameErrorMessage("");
     }
-    async () => {
-      const res = await fetch(avatar);
-      if (!res.ok) {
-        setAvatarError(true);
-        setAvatarErrorMessage("Can't get the image.");
-      }
-    };
+
+    if (avatar) {
+      fetch(avatar)
+        .then((res) => {
+          if (!res.ok) {
+            setAvatarError(true);
+            setAvatarErrorMessage("Can't get the image.");
+            isValid = false;
+          }
+        })
+        .catch(() => {
+          setAvatarError(true);
+          setAvatarErrorMessage("Can't get the image.");
+          isValid = false;
+        });
+    }
+
     return isValid;
   };
 
@@ -138,10 +147,22 @@ export default function SignUp(props) {
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("token", data.token);
       nav("/");
-      console.log(data);
     } catch (err) {
       setServerError(err.message);
       console.error(err);
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    try {
+      const response = await fetch("/api/auth/google", {
+        method: "GET",
+      });
+      const data = await response.json();
+      window.location.href = data.url; // Redirect to Google auth
+    } catch (error) {
+      setServerError("Failed to initiate Google sign-in");
+      console.error(error);
     }
   };
 
@@ -215,9 +236,8 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="password">Avatar</FormLabel>
+              <FormLabel htmlFor="avatar">Avatar</FormLabel>
               <TextField
-                required
                 fullWidth
                 name="avatar"
                 placeholder="URL"
@@ -240,8 +260,8 @@ export default function SignUp(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert("Sign up with Google")}
               startIcon={<GoogleIcon />}
+              onClick={handleGoogleSignUp}
             >
               Sign up with Google
             </Button>

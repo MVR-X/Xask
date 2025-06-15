@@ -1,104 +1,95 @@
 import express from "express";
-import User from "../models/User.js";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import bcrypt from "bcrypt";
-dotenv.config();
-const router = express.Router();
-const saltR = 10;
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
-// Login route
+const router = express.Router();
+
+// Regular username/password login
 router.post("/login", async (req, res) => {
   try {
     const { userName, password } = req.body;
-    // Validate inputs
-    if (!(userName && password)) {
+
+    if (!userName || !password) {
       return res
         .status(400)
-        .json({ message: "Name and password are required" });
+        .json({ message: "Username and password are required" });
     }
 
-    // Find user
     const user = await User.findOne({ userName });
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid username or password" });
     }
-    const verify = await bcrypt.compare(password, user.password);
-    if (!verify) {
-      return res.status(404).json({ message: "Invalid password" });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid username or password" });
     }
-    // Generate JWT token
-    const token = jwt.sign(
-      {
-        id: user._id,
-        userName: user.userName,
-        userAvatar: user.profilePicture,
-      },
-      process.env.JWT_TOKEN,
-      { expiresIn: "1h" }
-    );
-    res.json({
-      token,
-      user: {
-        userName: user.userName,
-        id: user._id,
-        userAvatar: user.profilePicture,
-      },
+
+    if (!process.env.JWT_TOKEN) {
+      throw new Error("JWT_TOKEN is not defined in environment variables");
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_TOKEN, {
+      expiresIn: "1d",
     });
-  } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ message: "Server error, please try again later" });
+
+    res.json({
+      user: { userName: user.userName, email: user.email, avatar: user.avatar },
+      token,
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    res
+      .status(500)
+      .json({ message: "Server error during login", error: error.message });
   }
 });
 
-// Signup route
+// Sign-up route
 router.post("/signup", async (req, res) => {
   try {
     const { userName, email, password, avatar } = req.body;
-    // Validate inputs
+
     if (!userName || !email || !password) {
-      return res
-        .status(400)
-        .json({ message: "userName, email, and password are required" });
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Check if user already exists
-    const user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({ message: "User email already exists" });
+    const existingUser = await User.findOne({ $or: [{ email }, { userName }] });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
     }
-    const hashP = await bcrypt.hash(password, saltR);
-    // Create new user
-    const newUser = new User({
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({
       userName,
       email,
-      password: hashP,
-      profilePicture: avatar,
+      password: hashedPassword,
+      avatar: avatar || "",
     });
-    const savedUser = await newUser.save();
+    await user.save();
 
-    // Generate JWT token
-    const token = jwt.sign(
-      {
-        id: savedUser._id,
-        userName: savedUser.userName,
-        avatar: savedUser.profilePicture || "",
-      },
-      process.env.JWT_TOKEN,
-      { expiresIn: "1h" }
-    );
-    res.status(201).json({
-      token,
-      user: {
-        id: savedUser._id,
-        userName: savedUser.userName,
-        avatar: savedUser.profilePicture || "",
-      },
-      success: true,
+    if (!process.env.JWT_TOKEN) {
+      throw new Error("JWT_TOKEN is not defined in environment variables");
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_TOKEN, {
+      expiresIn: "1d",
     });
-  } catch (err) {
-    console.error("Signup error:", err);
-    res.status(500).json({ message: "Server error, please try again later" });
+
+    res
+      .status(201)
+      .json({
+        user: {
+          userName: user.userName,
+          email: user.email,
+          avatar: user.avatar,
+        },
+        token,
+      });
+  } catch (error) {
+    console.error("Signup error:", error);
+    res.status(500).json({ message: "Server error during signup" });
   }
 });
 

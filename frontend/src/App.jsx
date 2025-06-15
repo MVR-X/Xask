@@ -6,6 +6,7 @@ import SignIn from "./pages/SignIn.jsx";
 import Task from "./pages/Task.jsx";
 import EditTask from "./pages/EditTask.jsx";
 import MyTodos from "./pages/MyTodos.jsx";
+import AuthCallback from "./pages/AuthCallback";
 function App() {
   return (
     <>
@@ -17,6 +18,7 @@ function App() {
           <Route path="/edit/:id" element={<EditTask />} />
           <Route path="/:id" element={<Task />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="signin" element={<SignIn />} />
         </Routes>
       </BrowserRouter>

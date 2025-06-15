@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -18,7 +17,7 @@ import { styled } from "@mui/material/styles";
 import ForgotPassword from "../comps/ForgotPassword";
 import AppTheme from "../shared-theme/AppTheme";
 import ColorModeSelect from "../shared-theme/ColorModeSelect";
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from "../comps/CustomIcons";
+import { GoogleIcon, SitemarkIcon } from "../comps/CustomIcons";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -85,8 +84,6 @@ export default function SignIn(props) {
     setError("");
     setSuccess(false);
 
-    console.log("Sending login request:", { name, password }); // Added for debugging
-
     try {
       const response = await fetch("/api/user/login", {
         method: "POST",
@@ -95,7 +92,7 @@ export default function SignIn(props) {
         },
         body: JSON.stringify({ userName: name, password }),
       });
-      console.log(name, password);
+
       if (!response.ok) {
         throw new Error("Login failed. Please check your credentials.");
       }
@@ -109,6 +106,28 @@ export default function SignIn(props) {
       setPassword("");
     } catch (err) {
       setError(err.message || "An error occurred during login.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch("/api/auth/google", {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url; // Redirect to Google auth
+      } else {
+        throw new Error("No auth URL received");
+      }
+    } catch (error) {
+      setError("Failed to initiate Google sign-in: " + error.message);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -212,14 +231,14 @@ export default function SignIn(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => alert("Sign in with Google")}
+              onClick={handleGoogleSignIn}
               startIcon={<GoogleIcon />}
+              disabled={loading}
             >
               Sign in with Google
             </Button>
-
             <Typography sx={{ textAlign: "center" }}>
-              Don't have an account?{" "}
+              Don't have an account?
               <Link href="/signup" variant="body2" sx={{ alignSelf: "center" }}>
                 Sign up
               </Link>
