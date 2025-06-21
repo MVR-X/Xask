@@ -21,7 +21,7 @@ dotenv.config();
 app.use(
   cors({
     origin:
-      process.env.NODE_ENV === "production"
+      process.env.NODE_ENV === "prod"
         ? process.env.FRONTEND_URL
         : "http://localhost:5173",
     credentials: true,
@@ -34,7 +34,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 
 const __dirname = path.resolve();
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "prod") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));

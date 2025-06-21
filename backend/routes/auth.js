@@ -82,7 +82,7 @@ router.get("/google/callback", async (req, res) => {
     });
 
     const frontendUrl =
-      process.env.NODE_ENV === "production"
+      process.env.NODE_ENV === "prod"
         ? process.env.FRONTEND_URL
         : "http://localhost:5173";
     res.redirect(
