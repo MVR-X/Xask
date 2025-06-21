@@ -7,7 +7,7 @@ import FormLabel from "@mui/material/FormLabel";
 import Typography from "@mui/material/Typography";
 import AppTheme from "../shared-theme/AppTheme";
 import ColorModeIconDropdown from "../shared-theme/ColorModeIconDropdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppAppBar from "../comps/AppAppBar";
 import { styled } from "@mui/material/styles";
@@ -68,6 +68,12 @@ const StyledTypography = styled(Typography)({
 });
 
 function Author({ card }) {
+  if (!card) {
+    card = {
+      userName: "Anonymous",
+      avatar: "https://via.placeholder.com/24",
+    };
+  }
   const data = new Date();
   const formatedD = data.toLocaleDateString("en-US", {
     month: "long",
@@ -100,7 +106,7 @@ function Author({ card }) {
             sx={{ width: 24, height: 24 }}
           />
         </AvatarGroup>
-        <Typography variant="caption">{card.userName || ""}</Typography>
+        <Typography variant="caption">{card.userName}</Typography>
       </Box>
       <Typography variant="caption">{formatedD}</Typography>
     </Box>
@@ -133,8 +139,8 @@ export default function NewTask(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (!user || !user.id) {
+      if (!user || !user.user._id) {
+        navigate("/signin");
         throw new Error("User not logged in or user ID missing");
       }
       const token = localStorage.getItem("token");
@@ -167,6 +173,11 @@ export default function NewTask(props) {
     }
   };
 
+  useEffect(() => {
+    if (!user || !user.user._id) {
+      navigate("/signin");
+    }
+  }, []);
   return (
     <AppTheme {...props}>
       <AppAppBar />

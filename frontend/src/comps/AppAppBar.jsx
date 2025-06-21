@@ -17,8 +17,8 @@ import AvatarGroup from "@mui/material/AvatarGroup";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 
-import { Link } from "react-router-dom";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: "flex",
@@ -61,7 +61,9 @@ function Author({ user }) {
             sx={{ width: 24, height: 24 }}
           />
         </AvatarGroup>
-        <Typography variant="caption">{user.userName || ""}</Typography>
+        <Typography variant="caption" color="primary">
+          {user.userName || ""}
+        </Typography>
       </Box>
       {/* <Typography variant="caption">j</Typography> */}
     </Box>
@@ -70,6 +72,7 @@ function Author({ user }) {
 export default function AppAppBar() {
   const [open, setOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
+  const nav = useNavigate();
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
@@ -77,6 +80,7 @@ export default function AppAppBar() {
   const handleLogout = () => {
     localStorage.removeItem("user");
     window.location.reload();
+    nav("/");
   };
 
   return (
@@ -112,14 +116,6 @@ export default function AppAppBar() {
                   New
                 </Button>
               </Link>
-              {/* <Button
-                variant="text"
-                color="info"
-                size="small"
-                sx={{ minWidth: 0 }}
-              >
-                FAQ
-              </Button> */}
             </Box>
           </Box>
           <Box
@@ -135,7 +131,7 @@ export default function AppAppBar() {
                 <Link to="">
                   <Button
                     color="primary"
-                    variant="text"
+                    variant="contained"
                     size="small"
                     onClick={handleLogout}
                   >
@@ -194,20 +190,38 @@ export default function AppAppBar() {
                   <MenuItem>New</MenuItem>
                 </Link>
                 <Divider sx={{ my: 3 }} />
-                <MenuItem>
-                  <Link to="/signup">
-                    <Button color="primary" variant="contained" fullWidth>
-                      Sign up
-                    </Button>
-                  </Link>
-                </MenuItem>
-                <MenuItem>
-                  <Link to="/signin">
-                    <Button color="primary" variant="outlined" fullWidth>
-                      Sign in
-                    </Button>
-                  </Link>
-                </MenuItem>
+                {user ? (
+                  <>
+                    <Author user={user} />
+                    <Link to="">
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={handleLogout}
+                        sx={{ mt: 1 }}
+                      >
+                        Log out
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem>
+                      <Link to="/signup">
+                        <Button color="primary" variant="contained" fullWidth>
+                          Sign up
+                        </Button>
+                      </Link>
+                    </MenuItem>
+                    <MenuItem>
+                      <Link to="/signin">
+                        <Button color="primary" variant="outlined" fullWidth>
+                          Sign in
+                        </Button>
+                      </Link>
+                    </MenuItem>
+                  </>
+                )}
               </Box>
             </Drawer>
           </Box>

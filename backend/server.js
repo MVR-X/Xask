@@ -11,12 +11,12 @@ const app = express();
 dotenv.config();
 
 // Log environment variables for debugging
-console.log("JWT_TOKEN:", process.env.JWT_TOKEN ? "Loaded" : "Missing");
-console.log("MONGODB_URI:", process.env.MONGODB_URI ? "Loaded" : "Missing");
-console.log(
-  "GOOGLE_CLIENT_ID:",
-  process.env.GOOGLE_CLIENT_ID ? "Loaded" : "Missing"
-);
+// console.log("JWT_TOKEN:", process.env.JWT_TOKEN ? "Loaded" : "Missing");
+// console.log("MONGODB_URI:", process.env.MONGODB_URI ? "Loaded" : "Missing");
+// console.log(
+//   "GOOGLE_CLIENT_ID:",
+//   process.env.GOOGLE_CLIENT_ID ? "Loaded" : "Missing"
+// );
 
 app.use(
   cors({
