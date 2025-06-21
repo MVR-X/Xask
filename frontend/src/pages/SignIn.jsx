@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react"; // Add useEffect
+import { useNavigate, useLocation } from "react-router-dom"; // Add useLocation
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
@@ -68,7 +68,8 @@ export default function SignIn(props) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(false);
-  const nav = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation(); // Add useLocation to access query parameters
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -77,6 +78,26 @@ export default function SignIn(props) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  // Handle Google auth callback
+  useEffect(() => {
+    const query = new URLSearchParams(location.search);
+    const token = query.get("token");
+    const user = query.get("user");
+
+    if (token && user) {
+      try {
+        const decodedUser = JSON.parse(decodeURIComponent(user));
+        localStorage.setItem("user", JSON.stringify(decodedUser));
+        localStorage.setItem("token", token);
+        setSuccess(true);
+        navigate("/"); // Redirect to home page
+      } catch (err) {
+        setError("Failed to process Google login data.");
+        console.error(err);
+      }
+    }
+  }, [location, navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -101,7 +122,7 @@ export default function SignIn(props) {
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("token", data.token);
       setSuccess(true);
-      nav("/");
+      navigate("/");
       setName("");
       setPassword("");
     } catch (err) {
@@ -174,10 +195,10 @@ export default function SignIn(props) {
               <FormLabel htmlFor="name">Username</FormLabel>
               <TextField
                 id="name"
-                type="name"
+                type="text" // Changed from "name" to "text"
                 name="name"
                 placeholder="Username"
-                autoComplete="name"
+                autoComplete="username"
                 autoFocus
                 required
                 fullWidth

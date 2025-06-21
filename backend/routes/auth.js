@@ -13,8 +13,8 @@ const client = new OAuth2Client({
 
 router.get("/google", (req, res) => {
   try {
-    console.log("Google Client ID:", process.env.GOOGLE_CLIENT_ID);
-    console.log("Redirect URI:", process.env.GOOGLE_REDIRECT_URI);
+    // console.log("Google Client ID:", process.env.GOOGLE_CLIENT_ID);
+    // console.log("Redirect URI:", process.env.GOOGLE_REDIRECT_URI);
 
     if (!process.env.GOOGLE_REDIRECT_URI) {
       throw new Error(

@@ -139,7 +139,7 @@ export default function NewTask(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!user || !user.user._id) {
+      if (!user || !user.userId) {
         navigate("/signin");
         throw new Error("User not logged in or user ID missing");
       }
@@ -174,7 +174,7 @@ export default function NewTask(props) {
   };
 
   useEffect(() => {
-    if (!user || !user.user._id) {
+    if (!user) {
       navigate("/signin");
     }
   }, []);
